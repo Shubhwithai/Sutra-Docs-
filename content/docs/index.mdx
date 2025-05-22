@@ -1,0 +1,88 @@
+---
+title: Introduction to SUTRA
+---
+
+
+**SUTRA™**, developed by TWO AI, is a family of multilingual large language models (LMLMs) engineered for developers, data scientists, and enterprises. Powered by a **dual-transformer architecture** combining Mixture of Experts (MoE) and dense transformer layers, SUTRA delivers exceptional performance across **50+ global and regional languages**, enabling scalable, efficient, and context-aware AI solutions from rapid prototyping to production-grade deployments.
+
+## 🧠 Optimized For
+- 💬 **Conversational AI**: Build engaging, multilingual chatbots and assistants.
+- 🌍 **Multilingual Understanding**: Communicate fluently in diverse languages.
+- 🧩 **Context-Aware Reasoning**: Solve complex, multi-step problems with precision.
+- 📄 **Knowledge Extraction & Summarization**: Process and distill structured or unstructured content.
+- 🔍 **Retrieval-Augmented Generation (RAG)**: Enhance responses with external data sources.
+
+## 🔑 Key Capabilities
+SUTRA models empower your applications with:
+
+- 🌐 **Multilingual Mastery**: Native-level fluency in over 50 languages, including Hindi, Bengali, Gujarati, Tamil, Telugu, Japanese, Korean, and more, with top Multilingual MMLU scores (e.g., Hindi: 81.44, Gujarati: 79.39).
+- ⚡ **High Throughput**: Optimized inference for low-latency, real-time applications, supported by servers in India, the USA, Korea, and Japan (coming soon).
+- 📦 **Structured Output Support**: Generate JSON, key-value pairs, or task-specific formats via prompt engineering.
+- 🧠 **Advanced Reasoning**: Handle logic-driven prompts, step-by-step computations, and multi-turn conversations with SUTRA-R0.
+- 🔗 **API-Compatible**: Seamless integration with OpenAI-compatible APIs, SDKs, and toolchains.
+- 🧰 **Open SDK Ecosystem**: Supported in LangChain, CrewAI, Agno, LiteLLM, Haystack, and more.
+
+## 🌍 Supported Languages
+SUTRA is designed for global reach and local impact, supporting a diverse range of languages:
+
+- **Indian Languages**: Hindi, Bengali, Gujarati, Tamil, Telugu, Kannada, Malayalam, Punjabi, Marathi, Urdu
+- **Asian Languages**: Japanese, Korean, Chinese, Thai, Vietnamese, Indonesian, Filipino
+- **European Languages**: English, French, Spanish, German, Portuguese, Russian, Italian
+- **Middle Eastern & African Languages**: Arabic, Turkish, Swahili
+- **Efficient Tokenizer**: Reduces token consumption by 3-5x for non-English languages, lowering costs.
+
+## 💼 Common Use Cases
+| Use Case                      | Description                                                                 |
+|-------------------------------|-----------------------------------------------------------------------------|
+| 💬 **Chatbots & Virtual Assistants** | Build multilingual assistants for customer support, education, and sales.   |
+| 📄 **Document Understanding** | Summarize, extract, and translate structured or unstructured content.       |
+| 🔍 **Search & Discovery**     | Enable semantic search across large datasets in multiple languages.         |
+| 📚 **Education & EdTech**     | Generate quizzes, explainers, and flashcards in regional languages.         |
+| 🌐 **Multilingual Interfaces**| Power products with native-language understanding and generation.           |
+| 🧑‍🌾 **GovTech & AgriTech**   | Create local-language interfaces for government schemes and rural knowledge.|
+
+## 🚀 Step 1: Get Started
+1. **Obtain an API Key**: Sign up at [https://www.two.ai/sutra/api](https://www.two.ai/sutra/api) to get a free SUTRA API key.
+2. **Test on ChatSUTRA**: Try SUTRA’s capabilities via [chat.two.ai](https://chat.two.ai) on web or mobile (iOS/Android).
+3. **Install Dependencies**:
+```bash
+!pip install -qU openai
+```
+
+## 🔐 Step 2: Basic Usage with SUTRA-V2
+```python
+from openai import OpenAI
+
+# Initialize SUTRA client
+client = OpenAI(
+    api_key="YOUR_SUTRA_API_KEY",
+    base_url="https://api.two.ai/v2"
+)
+
+# Basic chat completion
+response = client.chat.completions.create(
+    model="sutra-v2",
+    messages=[
+        {"role": "system", "content": "You are a helpful AI that answers concisely."},
+        {"role": "user", "content": "Explain AI in three sentences in Tamil."}
+    ],
+    max_tokens=1024,
+    temperature=0.7
+)
+print(response.choices[0].message.content)
+```
+
+## 🛠 Troubleshooting
+- **Invalid API Key**: Verify your key at [https://www.two.ai/sutra/api](https://www.two.ai/sutra/api).
+- **Model Not Found**: Use `sutra-v2` for conversational tasks or `sutra-r0` for reasoning. SUTRA-V1 was deprecated on March 22, 2025.
+- **Rate Limits**: Reduce request frequency or contact TWO AI at [https://www.two.ai/support](https://www.two.ai/support).
+- **Language Issues**: Ensure prompts match the target language’s script and syntax.
+
+## 📎 Resources
+- [SUTRA API](https://www.two.ai/sutra/api)
+- [SUTRA GitHub Repository](https://github.com/sutra-dev/sutra-cookbook)
+- [ChatSUTRA](https://chat.two.ai)
+- [SUTRA Documentation](https://docs.two.ai)
+- [TWO AI Newsletter](https://www.two.ai) for updates and promotions
+
+Explore **SUTRA** to build scalable, multilingual, and intelligent AI applications tailored to your needs.

@@ -1,0 +1,77 @@
+---
+title: SUTRA-V2 with React SDK
+---
+
+This guide demonstrates how to use the **SUTRA-V2** model with React to build interactive, multilingual AI applications. SUTRA-V2, developed by TWO AI, powers chat and instruction tasks via an OpenAI-compatible API.
+
+## 🔧 Prerequisites
+- Obtain your SUTRA API key from [https://www.two.ai/sutra/api](https://www.two.ai/sutra/api).
+- Store the API key securely (e.g., via a backend proxy or environment variables in production).
+
+## 📦 Step 1: Install Dependencies
+```bash
+npm install openai react
+```
+
+## 🔐 Step 2: Initialize SUTRA Client in React
+```jsx
+import React, { useState } from "react";
+import OpenAI from "openai";
+
+const client = new OpenAI({
+    apiKey: "YOUR_SUTRA_API_KEY",
+    baseURL: "https://api.two.ai/v2",
+    dangerouslyAllowBrowser: true // Note: Use a backend proxy in production
+});
+```
+
+## 💬 Step 3: Basic Chat Component
+```jsx
+function App() {
+    const [prompt, setPrompt] = useState("");
+    const [response, setResponse] = useState("");
+
+    const handleSubmit = async () => {
+        try {
+            const result = await client.chat.completions.create({
+                model: "sutra-v2",
+                messages: [
+                    { role: "system", content: "You are a helpful AI that answers concisely." },
+                    { role: "user", content: prompt }
+                ],
+                max_tokens: 1024,
+                temperature: 0.7
+            });
+            setResponse(result.choices[0].message.content);
+        } catch (error) {
+            setResponse(`Error: ${error.message}`);
+        }
+    };
+
+    return (
+        <div style={{ padding: "20px" }}>
+            <input
+                type="text"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="Ask SUTRA-V2 something..."
+            />
+            <button onClick={handleSubmit}>Submit</button>
+            <p>{response}</p>
+        </div>
+    );
+}
+
+export default App;
+```
+
+## 🛠 Troubleshooting
+- **Invalid API Key**: Ensure `YOUR_SUTRA_API_KEY` is secure. Use a backend proxy to avoid exposing keys in production.
+- **Model Not Found**: Use `sutra-v2`. SUTRA-V1 was deprecated on March 22, 2025.
+- **Rate Limits**: Reduce request frequency or contact TWO AI at [https://www.two.ai/support](https://www.two.ai/support).
+
+## 📎 Resources
+- [SUTRA API](https://www.two.ai/sutra/api)
+- [SUTRA GitHub Repository](https://github.com/sutra-dev/sutra-cookbook)
+- [OpenAI Node.js SDK](https://platform.openai.com/docs/api-reference?lang=node.js)
+- [React Documentation](https://react.dev)
