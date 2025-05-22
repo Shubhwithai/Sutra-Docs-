@@ -24,7 +24,7 @@ client = OpenAI(
 )
 response = client.chat.completions.create(
     model="sutra-v2",
-    messages=[{"role": "user", "content": "Tell me about Mars exploration in three sentences."}],
+    messages=[{"role": "user", "content": "How many languages can you speak?"}],
     max_tokens=1024,
     temperature=0.7
 )
@@ -40,7 +40,7 @@ async function main() {
     });
     const response = await client.chat.completions.create({
         model: "sutra-v2",
-        messages: [{ role: "user", content: "Tell me about Mars exploration in three sentences." }],
+        messages: [{ role: "user", content: "How many languages can you speak?" }],
         max_tokens: 1024,
         temperature: 0.7
     });
