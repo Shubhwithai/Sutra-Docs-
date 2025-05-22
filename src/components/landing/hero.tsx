@@ -190,7 +190,7 @@ function CodePreview() {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
                   key={currentTab}
-                  className="relative flex items-start px-1 text-sm"
+                  className="relative flex items-start px-1 text-sm w-full overflow-x-auto"
                 >
                   <div
                     aria-hidden="true"
@@ -227,7 +227,7 @@ function CodePreview() {
                         className={clsx(className, "flex overflow-x-auto pb-6")}
                         style={style}
                       >
-                        <code className="px-4">
+                        <code className="px-4 min-w-full whitespace-pre">
                           {tokens.map((line, lineIndex) => (
                             <div key={lineIndex} {...getLineProps({ line })}>
                               {line.map((token, tokenIndex) => (
