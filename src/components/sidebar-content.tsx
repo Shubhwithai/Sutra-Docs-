@@ -571,7 +571,7 @@ export const contents: Content[] = [
     ),
     list: [
       {
-        title: "Knowledge Agents with Agno",
+        title: "SUTRA + Agno Integration",
         href: "/docs/Popular-Usecases/agno",
         icon: Icons.book,
       },
