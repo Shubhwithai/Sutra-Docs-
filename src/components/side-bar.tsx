@@ -48,6 +48,11 @@ export default function ArticleLayout() {
       defaultValue = contents.findIndex(item => item.title === 'Popular Use Cases');
     }
     
+    // If not found and it's a Starter-Apps path, find the Starter Apps section
+    if (defaultValue === -1 && pathname.includes('Starter-Apps')) {
+      defaultValue = contents.findIndex(item => item.title === 'Starter Apps');
+    }
+    
     return defaultValue === -1 ? 0 : defaultValue;
   }
 
