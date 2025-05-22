@@ -28,8 +28,7 @@ response = client.chat.completions.create(
     max_tokens=1024,
     temperature=0.7
 )
-print(response.choices[0].message.content)
-)`,
+print(response.choices[0].message.content)`,
   },
   {
     name: "index.ts",
@@ -48,7 +47,7 @@ async function main() {
     console.log(response.choices[0].message.content);
 }
 main();
-  });`,
+  }`,
   },
 ];
 
