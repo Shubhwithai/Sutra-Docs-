@@ -1,0 +1,400 @@
+---
+title: SUTRA with CrewAI - Jupyter Notebook Documentation
+---
+
+This MDX file documents the **Sutra with CrewAI** Jupyter notebook, sourced from the [Sutra Cookbook repository](https://github.com/sutra-dev/sutra-cookbook/blob/main/notebooks/sutra_with_crewai.ipynb). The notebook demonstrates how to use the SUTRA LLM model, developed by Two Platforms, with the CrewAI framework to create collaborative AI agent teams. It showcases two use cases: a cultural research crew for analyzing Indian culture and a multilingual content creation crew for generating content in Hindi and Tamil.
+
+## Overview
+
+The SUTRA LLM is a family of large multilingual language models (LMLMs) supporting over 50 languages, powered by a dual-transformer approach combining Mixture of Experts (MoE) and Dense AI architectures. CrewAI is a framework for orchestrating role-playing, autonomous AI agents that collaborate to perform complex tasks. This notebook integrates SUTRA’s multilingual capabilities with CrewAI to build agent teams for cultural research and content creation, leveraging SUTRA’s proficiency in Indian languages and cultural contexts.
+
+The notebook includes:
+- Basic usage of SUTRA with the OpenAI client.
+- Integration of SUTRA with CrewAI via a custom LLM class.
+- A cultural research crew analyzing topics like the Diwali festival.
+- A multilingual content creation crew generating content about sustainable living in Hindi and Tamil.
+
+## Prerequisites
+
+To run this Jupyter notebook, ensure you have the following:
+- **Python** (v3.8 or higher, preferably 3.10.12 as specified in the notebook)
+- **pip** (Python package manager)
+- **Jupyter Notebook** or **Google Colab** (the notebook is designed for Colab)
+- **Required packages**:
+  - `openai` (`pip install openai`)
+  - `crewai` (`pip install crewai 'crewai[tools]'`)
+  - `google-colab` (for Colab-specific secrets management, pre-installed in Colab)
+- A valid **Sutra API key** (obtain from [Two AI's SUTRA API page](https://www.two.ai/sutra/api))
+- A modern web browser (e.g., Chrome, Firefox) for accessing Colab
+
+## Setup Instructions
+
+### Option 1: Run in Google Colab
+1. Open the notebook in Colab using the provided link: [Open in Colab](https://colab.research.google.com/drive/1Qwel8pph9pL_m1dmy3CmMG7xIsYxYA6c?usp=sharing).
+2. Set up your SUTRA API key in Colab Secrets:
+   - Go to the “Secrets” tab in Colab (lock icon in the sidebar).
+   - Add a secret named `SUTRA_API_KEY` with your API key as the value.
+3. Run the cells in sequence to install dependencies, set up the environment, and execute the code.
+4. No local installation is required, as Colab provides the Python environment.
+
+### Option 2: Run Locally
+1. **Install Dependencies**:
+   ```bash
+   pip install openai crewai 'crewai[tools]' jupyter
+   ```
+2. **Set Up Environment Variables**:
+   Create a `.env` file in the project directory with:
+   ```bash
+   SUTRA_API_KEY=your_sutra_api_key_here
+   ```
+   Alternatively, set the environment variable manually:
+   ```bash
+   export SUTRA_API_KEY=your_sutra_api_key_here
+   ```
+3. **Save the Notebook**:
+   Save the provided code as `sutra_with_crewai.ipynb`.
+4. **Run the Notebook**:
+   Launch Jupyter Notebook:
+   ```bash
+   jupyter notebook
+   ```
+   Open `sutra_with_crewai.ipynb` in the browser and run the cells in sequence.
+
+## Notebook Code
+
+The following sections present the Python code from the notebook, organized by its key components.
+
+### 1. Setup and Installation
+Install the required packages.
+
+```python
+!pip install openai crewai 'crewai[tools]'
+```
+
+### 2. Setting Up Environment Variables
+Configure the SUTRA API key, using Colab Secrets for security in Google Colab.
+
+```python
+import os
+from google.colab import userdata
+
+# Set the API key from Colab secrets
+os.environ["SUTRA_API_KEY"] = userdata.get("SUTRA_API_KEY")
+```
+
+For local environments, load the API key from a `.env` file using `python-dotenv`:
+
+```python
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+os.environ["SUTRA_API_KEY"] = os.getenv("SUTRA_API_KEY")
+```
+
+### 3. Basic Usage of SUTRA with OpenAI Client
+Demonstrate a simple interaction with the SUTRA LLM using the OpenAI client.
+
+```python
+from openai import OpenAI
+
+# Initialize the client with Sutra's API endpoint
+client = OpenAI(
+    base_url='https://api.two.ai/v2',
+    api_key=os.environ["SUTRA_API_KEY"]
+)
+
+# Simple completion with Sutra
+response = client.chat.completions.create(
+    model="sutra-v2",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant that specializes in Indian languages and culture."},
+        {"role": "user", "content": "Tell me about the importance of the Ganga river in Indian culture."}
+    ]
+)
+
+print(response.choices[0].message.content)
+```
+
+### 4. Integrating SUTRA with CrewAI
+Create a custom LLM class for CrewAI to use the SUTRA model.
+
+```python
+from crewai import LLM
+
+llm = LLM(
+    model="openai/sutra-v2",
+    api_key=os.getenv("SUTRA_API_KEY"),
+    api_base="https://api.two.ai/v2",
+)
+```
+
+### 5. Creating a Cultural Research Crew
+Define agents and tasks for a cultural research crew analyzing Indian culture (e.g., Diwali festival).
+
+```python
+from crewai import Agent, Task, Crew, Process
+
+# Define the agents with specialized roles
+cultural_researcher = Agent(
+    role="Cultural Research Specialist",
+    goal="Research and gather comprehensive information about Indian cultural topics",
+    backstory="""You are an expert in Indian history and cultural studies with decades of experience.
+    You have deep knowledge of Indian traditions, religions, arts, and social practices across different regions.
+    You excel at gathering accurate and nuanced information about cultural topics.""",
+    verbose=True,
+    llm=llm
+)
+
+linguistic_expert = Agent(
+    role="Linguistic Expert",
+    goal="Analyze and explain language aspects and provide translations when needed",
+    backstory="""You are a polyglot specializing in Indian languages including Hindi, Tamil, Bengali, Telugu,
+    Marathi, and Punjabi. You can translate between these languages and English, and explain linguistic
+    nuances, etymologies, and cultural contexts of words and phrases.""",
+    verbose=True,
+    llm=llm
+)
+
+content_writer = Agent(
+    role="Content Writer",
+    goal="Create engaging, informative content based on research findings",
+    backstory="""You are a talented writer with a gift for making complex cultural topics accessible
+    and engaging. You can synthesize research into clear, compelling narratives that respect
+    the cultural nuances and authenticity of the subject matter.""",
+    verbose=True,
+    llm=llm
+)
+
+# Define tasks for the cultural research project
+research_task = Task(
+    description="""Research the significance and history of {topic} in Indian culture.
+    Include regional variations, historical evolution, and contemporary relevance.
+    Gather facts, stories, and cultural contexts.""",
+    expected_output="A comprehensive research report with well-organized facts and cultural insights",
+    agent=cultural_researcher
+)
+
+linguistic_analysis_task = Task(
+    description="""Analyze the linguistic aspects of {topic} in Indian culture.
+    Explain key terms in relevant Indian languages, their meanings, and cultural significance.
+    Provide translations of important phrases and concepts.""",
+    expected_output="A detailed linguistic analysis with translations and cultural context of key terms",
+    agent=linguistic_expert
+)
+
+content_creation_task = Task(
+    description="""Based on the research and linguistic analysis, create an engaging and informative
+    article about {topic} in Indian culture. The content should be culturally respectful,
+    accurate, and accessible to a global audience while preserving authentic cultural nuances.""",
+    expected_output="A well-written, engaging article that effectively communicates the cultural significance of the topic",
+    agent=content_writer,
+    context=[research_task, linguistic_analysis_task]
+)
+
+# Form the crew and execute tasks
+cultural_research_crew = Crew(
+    agents=[cultural_researcher, linguistic_expert, content_writer],
+    tasks=[research_task, linguistic_analysis_task, content_creation_task],
+    process=Process.sequential,
+    verbose=True
+)
+
+# Execute the crew's tasks for a specific cultural topic
+result = cultural_research_crew.kickoff(
+    inputs={"topic": "Diwali festival"}
+)
+
+print("\n\nFinal Result:\n")
+print(result)
+```
+
+### 6. Creating a Multilingual Content Creation Crew
+Define agents and tasks for a multilingual content creation crew generating content in Hindi and Tamil.
+
+```python
+# Define agents for multilingual content creation
+content_strategist = Agent(
+    role="Content Strategist",
+    goal="Develop effective content strategies for multilingual audiences in India",
+    backstory="""You are an experienced content strategist who understands the diverse
+    linguistic landscape of India. You know how to tailor content strategies for
+    different language communities while maintaining a cohesive brand message.""",
+    verbose=True,
+    llm=llm
+)
+
+hindi_writer = Agent(
+    role="Hindi Content Writer",
+    goal="Create engaging and culturally relevant content in Hindi",
+    backstory="""You are a native Hindi speaker with excellent writing skills. You understand
+    the cultural nuances of Hindi-speaking regions and can create content that resonates
+    with this audience.""",
+    verbose=True,
+    llm=llm
+)
+
+tamil_writer = Agent(
+    role="Tamil Content Writer",
+    goal="Create engaging and culturally relevant content in Tamil",
+    backstory="""You are a native Tamil speaker with excellent writing skills. You understand
+    the cultural nuances of Tamil-speaking regions and can create content that resonates
+    with this audience.""",
+    verbose=True,
+    llm=llm
+)
+
+editor = Agent(
+    role="Multilingual Editor",
+    goal="Ensure consistency and quality across multilingual content",
+    backstory="""You are a skilled editor who is fluent in multiple Indian languages.
+    You ensure that translations maintain the original message while being culturally
+    appropriate for each language audience.""",
+    verbose=True,
+    llm=llm
+)
+
+# Define tasks for multilingual content creation
+strategy_task = Task(
+    description="""Develop a content strategy for creating multilingual content about {topic}
+    for Hindi and Tamil speaking audiences. Consider cultural nuances, regional preferences,
+    and effective messaging approaches for each language community.""",
+    expected_output="A comprehensive content strategy document with specific guidelines for each language",
+    agent=content_strategist
+)
+
+hindi_content_task = Task(
+    description="""Based on the content strategy, create engaging content in Hindi about {topic}.
+    The content should be culturally relevant and resonate with Hindi-speaking audiences.""",
+    expected_output="High-quality Hindi content that follows the strategy guidelines",
+    agent=hindi_writer,
+    context=[strategy_task]
+)
+
+tamil_content_task = Task(
+    description="""Based on the content strategy, create engaging content in Tamil about {topic}.
+    The content should be culturally relevant and resonate with Tamil-speaking audiences.""",
+    expected_output="High-quality Tamil content that follows the strategy guidelines",
+    agent=tamil_writer,
+    context=[strategy_task]
+)
+
+editing_task = Task(
+    description="""Review and edit the Hindi and Tamil content about {topic}. Ensure consistency
+    with the original strategy while preserving the cultural nuances of each language.
+    Provide a final assessment of the multilingual content package.""",
+    expected_output="Edited versions of both language contents with an assessment report",
+    agent=editor,
+    context=[strategy_task, hindi_content_task, tamil_content_task]
+)
+
+# Form the multilingual content crew
+multilingual_crew = Crew(
+    agents=[content_strategist, hindi_writer, tamil_writer, editor],
+    tasks=[strategy_task, hindi_content_task, tamil_content_task, editing_task],
+    process=Process.sequential,
+    verbose=True
+)
+
+# Execute the crew's tasks for a specific topic
+multilingual_result = multilingual_crew.kickoff(
+    inputs={"topic": "sustainable living practices"}
+)
+
+print("\n\nFinal Multilingual Content:\n")
+print(multilingual_result)
+```
+
+## Functionality
+
+- **Basic SUTRA Usage**: Demonstrates direct interaction with the SUTRA LLM using the OpenAI client, e.g., querying the cultural significance of the Ganga river.
+- **CrewAI Integration**: Uses a custom `LLM` class to integrate SUTRA with CrewAI, enabling agent-based workflows.
+- **Cultural Research Crew**:
+  - **Agents**: Cultural Research Specialist, Linguistic Expert, Content Writer.
+  - **Tasks**: Research the history and significance of a topic (e.g., Diwali), analyze linguistic aspects, and create an engaging article.
+  - **Process**: Sequential, with the content creation task depending on research and linguistic outputs.
+- **Multilingual Content Creation Crew**:
+  - **Agents**: Content Strategist, Hindi Writer, Tamil Writer, Multilingual Editor.
+  - **Tasks**: Develop a content strategy, create content in Hindi and Tamil, and edit for consistency.
+  - **Process**: Sequential, with content creation and editing tasks depending on the strategy.
+- **Multilingual Support**: Leverages SUTRA’s proficiency in over 50 languages, particularly Indian languages like Hindi and Tamil.
+- **Verbose Output**: Provides detailed logs of agent activities for transparency.
+
+## Running the Notebook
+
+### In Google Colab
+1. Open the notebook via the Colab link: [Open in Colab](https://colab.research.google.com/drive/1Qwel8pph9pL_m1dmy3CmMG7xIsYxYA6c?usp=sharing).
+2. Set the `SUTRA_API_KEY` in Colab Secrets.
+3. Run each cell sequentially:
+   - Install dependencies.
+   - Set up environment variables.
+   - Execute the basic SUTRA query.
+   - Run the cultural research crew for the Diwali festival.
+   - Run the multilingual content crew for sustainable living practices.
+4. View the outputs (research report, article, Hindi/Tamil content, and assessment report) in the Colab interface.
+
+### Locally
+1. Install dependencies:
+   ```bash
+   pip install openai crewai 'crewai[tools]' jupyter python-dotenv
+   ```
+2. Set up the `.env` file with `SUTRA_API_KEY`.
+3. Save the code as `sutra_with_crewai.ipynb`.
+4. Run Jupyter Notebook:
+   ```bash
+   jupyter notebook
+   ```
+5. Open and run the notebook cells in sequence.
+
+## Usage Examples
+
+### Example 1: Cultural Research Crew (Diwali Festival)
+1. Run the cultural research crew section with `topic="Diwali festival"`.
+2. Expected outputs:
+   - **Research Task**: A report detailing Diwali’s history, regional variations (e.g., North vs. South India), and modern celebrations.
+   - **Linguistic Analysis Task**: Explanations of terms like “Deepavali” (Tamil), “Diwali” (Hindi), their etymology, and translations.
+   - **Content Creation Task**: An article like:
+     ```
+     ## The Vibrant Festival of Diwali
+     Diwali, the festival of lights, is one of India’s most cherished celebrations. Originating from ancient traditions, it symbolizes the victory of light over darkness. In North India, Diwali is marked by lighting diyas and fireworks, while in Tamil Nadu, Deepavali includes early morning oil baths. The word “Diwali” derives from Sanskrit “Deepavali,” meaning “row of lights.” Today, Diwali unites diverse communities in celebration, reflection, and sharing.
+     ```
+
+### Example 2: Multilingual Content Creation Crew (Sustainable Living)
+1. Run the multilingual content crew section with `topic="sustainable living practices"`.
+2. Expected outputs:
+   - **Strategy Task**: A strategy document outlining messaging for Hindi and Tamil audiences, e.g., emphasizing local practices like rainwater harvesting in Tamil Nadu.
+   - **Hindi Content Task**: Content like:
+     ```
+     ## सतत जीवन शैली: पर्यावरण के लिए कदम
+     सतत जीवन शैली अपनाना पर्यावरण संरक्षण के लिए महत्वपूर्ण है। भारत में, वर्षा जल संचयन और जैविक खेती जैसी प्रथाएं लोकप्रिय हैं। ये न केवल पर्यावरण को बचाती हैं बल्कि समुदायों को आत्मनिर्भर बनाती हैं।
+     ```
+   - **Tamil Content Task**: Content like:
+     ```
+     ## நிலையான வாழ்க்கை முறைகள்
+     நிலையான வாழ்க்கை முறைகள் சுற்றுச்சூழலைப் பாதுகாக்க உதவுகின்றன. தமிழ்நாட்டில், மழைநீர் சேகரிப்பு மற்றும் இயற்கை விவசாயம் பரவலாக உள்ளன. இவை சமூகங்களை சுயமாக ஆக்குகின்றன.
+     ```
+   - **Editing Task**: Edited versions ensuring consistency and a report confirming cultural appropriateness.
+
+## Notes
+
+- **API Key**: A valid Sutra API key is required from [Two AI's SUTRA API page](https://www.two.ai/sutra/api). Store it securely in Colab Secrets or a `.env` file.
+- **Multilingual Support**: SUTRA’s strength in Indian languages (e.g., Hindi, Tamil) makes it ideal for these use cases. Ensure the API supports the target languages.
+- **CrewAI Framework**: The sequential process ensures tasks build on each other, but complex workflows may require tuning agent roles or task dependencies.
+- **Limitations**:
+  - Requires a stable internet connection for API calls.
+  - Output quality depends on SUTRA’s language proficiency and the specificity of task descriptions.
+  - Colab’s free tier may have resource constraints for large-scale runs.
+- **Extensibility**:
+  - Add more agents (e.g., a data analyst for quantitative insights) or languages (e.g., Bengali, Telugu).
+  - Integrate external tools (e.g., web scraping for real-time data) via CrewAI’s `tools` package.
+  - Modify task prompts for different topics (e.g., Indian cuisine, yoga) or output formats (e.g., blog posts, social media content).
+- **Local Setup**: If running locally, ensure `python-dotenv` is installed for environment variable management, as the notebook’s Colab-specific `userdata` module won’t work.
+
+## Resources
+
+- [Complete Notebook Source](https://github.com/sutra-dev/sutra-cookbook/blob/main/notebooks/sutra_with_crewai.ipynb)
+- [Colab Notebook Link](https://colab.research.google.com/drive/1Qwel8pph9pL_m1dmy3CmMG7xIsYxYA6c?usp=sharing)
+- [Sutra API Documentation](https://www.two.ai/sutra/api)
+- [CrewAI Documentation](https://docs.crewai.com/)
+- [LangChain Documentation](https://python.langchain.com/docs/get_started/introduction)
+- [OpenAI Python Client Documentation](https://platform.openai.com/docs/api-reference?lang=python)

@@ -56,7 +56,7 @@ messages = [
     ChatMessage.from_user("Explain the benefits of AI in education in French.")
 ]
 response = pipeline.run({"generator": {"messages": messages}})
-print(response["generator"]["replies"][0].content)
+print(response["generator"]["replies"][0].text)
 ```
 
 ## 🧠 Step 5: Build a RAG Pipeline with SUTRA-R0
