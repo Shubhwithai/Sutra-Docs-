@@ -129,7 +129,6 @@ initial_state = {
     "reasoning_steps": []
 }
 result = reasoning_graph.invoke(initial_state)
-print("Reasoning Steps:", result["reasoning_steps"])
 print("Final Answer:", result["messages"][-1].content)
 ```
 

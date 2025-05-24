@@ -30,13 +30,17 @@ Identify which SUTRA model your application uses:
 ## 🔐 Step 2: Obtain or Verify Your API Key
 To access newer models, ensure you have a valid SUTRA API key:
 - Get your API key from [https://www.two.ai/sutra/api](https://www.two.ai/sutra/api).
-- In Google Colab:
-  - Click the 🔑 icon in the left sidebar.
-  - Add or verify a secret named: `SUTRA_API_KEY`.
+- Set your API key as an environment variable:
+
+```bash
+export SUTRA_API_KEY="your-api-key-here"
+```
+
+Then in your Python code:
 
 ```python
-from google.colab import userdata
-SUTRA_API_KEY = userdata.get("SUTRA_API_KEY")
+import os
+SUTRA_API_KEY = os.getenv("SUTRA_API_KEY")
 ```
 
 ## 🔄 Step 3: Transition to SUTRA-V2
@@ -61,30 +65,11 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
-## 📊 Step 4: Transitioning SUTRA-Q0 (If Applicable)
-While SUTRA-Q0 is currently active, prepare for potential future updates:
-- **Review Usage**: Ensure your time-series data inputs (e.g., pandas Series or lists) are compatible with SUTRA-Q0’s dense architecture.
-- **Example Forecasting**:
-```python
-import pandas as pd
-data = pd.Series([100, 102, 105, 103, 107], index=pd.date_range('2025-01-01', periods=5))
-response = client.chat.completions.create(
-    model='sutra-q0',
-    messages=[{"role": "user", "content": f"Predict the next 3 values: {data.values.tolist()}"}],
-    max_tokens=1024,
-    temperature=0.7
-)
-print(response.choices[0].message.content)
-```
-- **Monitor Updates**: Check [www.two.ai](https://www.two.ai) for announcements about SUTRA-Q series advancements.
-
 ## 🛠 Troubleshooting
 - **API Key Errors**: Verify your `SUTRA_API_KEY` spelling and ensure it’s stored securely in Colab secrets.
 - **Model Not Found**: Update your model name (e.g., `sutra-v2` instead of `sutra-v1`) in API calls.
-- **Rate Limits**: If you encounter rate limits, consider upgrading your plan or reducing request frequency. Contact TWO AI at [https://www.two.ai/sutra/api](https://www.two.ai/sutra/api) for support.
+- **Rate Limits**: If you encounter rate limits, consider upgrading your plan or reducing request frequency.
 - **Incompatible Code**: Ensure your code aligns with OpenAI-compatible SDKs for SUTRA-V2. Refer to [docs.two.ai](https://docs.two.ai) for updated examples.
 
 ## ℹ️ Additional Resources
-- **Documentation**: Explore the full SUTRA API reference at [docs.two.ai](https://docs.two.ai).
-- **Support**: Contact TWO AI support via [https://www.two.ai/support](https://www.two.ai/support).
 - **Newsletter**: Sign up for the TWO AI Newsletter at [www.two.ai](https://www.two.ai) to stay informed about model updates and deprecations.

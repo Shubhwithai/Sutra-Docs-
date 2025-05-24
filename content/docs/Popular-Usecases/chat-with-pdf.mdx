@@ -2,7 +2,7 @@
 title: SUTRA Multilingual Chat with PDF
 ---
 
-This MDX file documents the **Sutra Multilingual Chat with PDF** Jupyter notebook, sourced from the [Sutra Cookbook repository](https://github.com/sutra-dev/sutra-cookbook/blob/main/notebooks/multilingual_chat_with_pdf.ipynb). The notebook demonstrates a Retrieval-Augmented Generation (RAG) system using the SUTRA LLM model by Two Platforms to answer questions about uploaded PDF documents in over 50 languages. It leverages LangChain for document processing and conversation management, FAISS for vector storage, and the SUTRA LLM for multilingual responses.
+The notebook demonstrates a Retrieval-Augmented Generation (RAG) system using the SUTRA LLM model by Two Platforms to answer questions about uploaded PDF documents in over 50 languages. It leverages LangChain for document processing and conversation management, FAISS for vector storage, and the SUTRA LLM for multilingual responses.
 
 ## Overview
 
@@ -40,7 +40,7 @@ To run this Jupyter notebook, ensure you have the following:
 ## Setup Instructions
 
 ### Option 1: Run in Google Colab
-1. Open the notebook in Colab using the provided link: [Open in Colab](https://colab.research.google.com/drive/18BffQ6e0xrIpF97jRniLci2mAEvxHSl7?usp=sharing).
+1. Create a new Google Colab notebook by visiting [Google Colab](https://colab.research.google.com/) and clicking "New Notebook".
 2. Set up API keys in Colab Secrets:
    - Go to the “Secrets” tab in Colab (lock icon in the sidebar).
    - Add secrets named `SUTRA_API_KEY` and `OPENAI_API_KEY` with their respective values.
@@ -219,33 +219,6 @@ print("🔹 Response:\n", response)
 - **Question Answering**: Answers questions based on the PDF content, using retrieved context to ensure relevance and accuracy.
 - **Error Handling**: Implicitly handles errors through try-except blocks in the UI section (excluded here) and requires proper API key setup.
 
-## Running the Notebook
-
-### In Google Colab
-1. Open the notebook via the Colab link: [Open in Colab](https://colab.research.google.com/drive/18BffQ6e0xrIpF97jRniLci2mAEvxHSl7?usp=sharing).
-2. Set `SUTRA_API_KEY` and `OPENAI_API_KEY` in Colab Secrets.
-3. Upload a PDF to Colab (e.g., `/content/your_pdf.pdf`) and update the path in Step 3.
-4. Run the cells sequentially to:
-   - Install dependencies.
-   - Set up API keys.
-   - Load and process the PDF.
-   - Create the RAG chain.
-   - Test with questions (e.g., `ask_question("what is transformer", language="Hindi")`).
-5. View the responses in the Colab output.
-
-### Locally
-1. Install dependencies:
-   ```bash
-   pip install langchain langchain-openai langchain-community faiss-cpu pypdf python-docx requests jupyter python-dotenv
-   ```
-2. Set up the `.env` file with `SUTRA_API_KEY` and `OPENAI_API_KEY`.
-3. Save the code as `multilingual_chat_with_pdf.ipynb`.
-4. Place your PDF in the project directory and update the path in Step 3 (e.g., `./your_pdf.pdf`).
-5. Run Jupyter Notebook:
-   ```bash
-   jupyter notebook
-   ```
-6. Open and run the notebook cells in sequence.
 
 ## Usage Examples
 
@@ -306,8 +279,6 @@ print("🔹 Response:\n", response)
 
 ## Resources
 
-- [Complete Notebook Source](https://github.com/sutra-dev/sutra-cookbook/blob/main/notebooks/multilingual_chat_with_pdf.ipynb)
-- [Colab Notebook Link](https://colab.research.google.com/drive/18BffQ6e0xrIpF97jRniLci2mAEvxHSl7?usp=sharing)
 - [Sutra API Documentation](https://www.two.ai/sutra/api)
 - [LangChain Documentation](https://python.langchain.com/docs/get_started/introduction)
 - [FAISS Documentation](https://github.com/facebookresearch/faiss)
